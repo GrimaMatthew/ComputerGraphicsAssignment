@@ -13,23 +13,52 @@ public class TriangleMaker : MonoBehaviour
 
     private List<Material> materialList;
 
+
+
+   
+
     // Update is called once per frame
     void Update()
+    {
+
+     
+        makeT();
+        AddMaterials();
+
+        
+
+    }
+
+    private void AddMaterials()
+    {
+        Material greenMat = new Material(Shader.Find("Specular"));
+        greenMat.color = Color.green;
+
+        Material kMat = new Material(Shader.Find("Specular")); // Colour for the bottom of the triangle
+        kMat.color = Color.yellow;
+
+        materialList = new List<Material>();
+        materialList.Add(kMat);
+        materialList.Add(greenMat);
+    }
+
+    private void makeT()
     {
         //intialise mesh filter
         MeshFilter meshFilter = this.GetComponent<MeshFilter>();
 
         //initialise mesh builder
-        MeshBuilder meshBuilder = new MeshBuilder(1);// 1 when we only have 1 strinagle submesh count
+        MeshBuilder meshBuilder = new MeshBuilder(2);// 1 when we only have 1 strinagle submesh count
 
 
         //build our triangle
-        Vector3 p0 = new Vector3(size.x, size.y,-size.z);
+        Vector3 p0 = new Vector3(size.x, size.y, -size.z);
         Vector3 p1 = new Vector3(-size.x, size.y, -size.z);
-        Vector3 p2 = new Vector3(-size.x,size.y, size.z);
+        Vector3 p2 = new Vector3(-size.x, size.y, size.z);
 
 
         meshBuilder.BuildTriangle(p0, p1, p2, 0);
+        meshBuilder.BuildTriangle(p0, p2, p1, 1);  // adding the bottom triangle
 
 
 
@@ -42,15 +71,5 @@ public class TriangleMaker : MonoBehaviour
         AddMaterials();
         meshRender.materials = materialList.ToArray();
 
-        
-    }
-
-    private void AddMaterials()
-    {
-        Material greenMat = new Material(Shader.Find("Specular"));
-        greenMat.color = Color.green;
-
-        materialList = new List<Material>();
-        materialList.Add(greenMat);
     }
 }

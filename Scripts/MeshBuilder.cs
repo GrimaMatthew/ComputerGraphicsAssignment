@@ -75,6 +75,8 @@ public class MeshBuilder
     {
         Mesh mesh = new Mesh();
 
+        
+
         mesh.vertices = verti.ToArray();
 
         mesh.triangles = indi.ToArray();

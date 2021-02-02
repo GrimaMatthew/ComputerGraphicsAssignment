@@ -124,8 +124,5 @@ public class CubeCreater : MonoBehaviour
         //set mesh filters mesh to the mesh generate from out Meshbuilder
         meshFilter.mesh = meshBuilder.CreateMesh();
 
-      
-
-
     }
 }
