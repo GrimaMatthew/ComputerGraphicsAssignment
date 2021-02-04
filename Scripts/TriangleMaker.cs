@@ -20,12 +20,8 @@ public class TriangleMaker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-     
         makeT();
-        AddMaterials();
-
-        
+        AddMaterials();   
 
     }
 
@@ -58,7 +54,7 @@ public class TriangleMaker : MonoBehaviour
 
 
         meshBuilder.BuildTriangle(p0, p1, p2, 0);
-        meshBuilder.BuildTriangle(p0, p2, p1, 1);  // adding the bottom triangle
+        meshBuilder.BuildTriangle(p0, p2, p1, 1);  // adding the bottom triangle so it can be viewed from the bottom also  
 
 
 

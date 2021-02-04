@@ -51,7 +51,6 @@ public class CubeCreater : MonoBehaviour
             Material randMaterial = new Material(Shader.Find("Specular"));
             randMaterial.color = UnityEngine.Random.ColorHSV();
             materialsList.Add(randMaterial);
-  
 
         }
 
