@@ -10,23 +10,20 @@ public class Wall : MonoBehaviour
     private List<Material> materialsList;
 
     [SerializeField]
-    private int meshSize = 1;
+    private int meshSize = 2;
 
 
-    Vector3 t0;
+
     Vector3 t1;
     Vector3 t2;
-    Vector3 t3;
-
-    Vector3 b0;
     Vector3 b1;
     Vector3 b2;
-    Vector3 b3;
+   
 
     private void Start()
     {
-        SquareMaker();
-        meshCube();
+        WallMaker();
+        meshSquare();
         StartCoroutine(AddMat());
     }
 
@@ -38,7 +35,7 @@ public class Wall : MonoBehaviour
 
         materialsList = new List<Material>();
 
-        for (int i = 0; i <= 1; i++)
+        for (int i = 0; i <= 2; i++)
         {
             Material randMaterial = new Material(Shader.Find("Specular"));
             randMaterial.color = UnityEngine.Random.ColorHSV();
@@ -57,27 +54,25 @@ public class Wall : MonoBehaviour
 
 
 
-    private void SquareMaker()
+    private void WallMaker()
     {
 
         //TopVertices
-        t0 = new Vector3(size.x, size.y, -size.z);  //Top Left
-        t1 = new Vector3(-size.x, size.y, -size.z); //Top Right
-        t2 = new Vector3(-size.x, size.y, size.z);// Bottom right of the top square 
-        t3 = new Vector3(size.x, size.y, size.z);//bottom left of the top square
+     
+        t1 = new Vector3(-size.x, size.y, -size.z); 
+        t2 = new Vector3(-size.x, size.y, size.z);
+      
 
-
-        //Bottom Vertices(just a change in Y)
-
-        b0 = new Vector3(size.x, -size.y, -size.z);
+        //Bottom Vertices
+ 
         b1 = new Vector3(-size.x, -size.y, -size.z); //bottom Right
         b2 = new Vector3(-size.x, -size.y, size.z);// Bottom right of the bottom square 
-        b3 = new Vector3(size.x, -size.y, size.z);//bottom left of the bottom square
+       
 
     }
 
 
-    private void meshCube()
+    private void meshSquare()
     {
         //initialise MeshFilter
         MeshFilter meshFilter = this.GetComponent<MeshFilter>();
@@ -87,13 +82,12 @@ public class Wall : MonoBehaviour
 
 
 
-        //Left-side Square
-        meshBuilder.BuildTriangle(b1, t2, t1, 1);
-        meshBuilder.BuildTriangle(b1, b2, t2, 1);
+        //Wall
+        meshBuilder.BuildTriangle(b1, t2, t1, 0);
+        meshBuilder.BuildTriangle(b1, b2, t2, 0);
 
-        //Front Square
-        meshBuilder.BuildTriangle(b3, t0, t3, 1);
-        meshBuilder.BuildTriangle(b3, b0, t0, 1);
+        meshBuilder.BuildTriangle(b1, t1, t2, 1);
+        meshBuilder.BuildTriangle(b1, t2, b2, 1);
 
 
 
