@@ -15,7 +15,7 @@ public class Road : MonoBehaviour
     private float segments = 300f;
 
     [SerializeField]
-    private float lineWidth = 0.3f; // middle white line road marker
+    private static float lineWidth = 0.3f; // middle white line road marker
 
     [SerializeField]
     private float roadWidth = 8f; // width of the road on each side of the line
@@ -52,8 +52,17 @@ public class Road : MonoBehaviour
 
     List<Vector3> points = new List<Vector3>();
 
-    //[SerializeField]
-    //private GameObject car;
+
+    Vector3 offset = Vector3.zero;
+    Vector3 targetOffset = Vector3.forward * lineWidth;
+
+    Vector3 carPos;
+
+    GameObject cube;
+    GameObject Wall;
+
+    [SerializeField]
+    private GameObject car;
 
     void Start()
     {
@@ -63,45 +72,53 @@ public class Road : MonoBehaviour
 
         PointMaker();
 
+        MaterialList();
+
+        carPos = car.transform.position;
+
+        StartCoroutine(endP());
+
+
+
+
 
     }
+
+
+   
+
 
     //3. This method will used to create the different segments for each segment we are going to draw the road marker 
     //   (i.e. white line in the middle), draw the road on each side of the line, draw the edges - all these are going 
     //   to be placed in different positions
-    private void ExtrudeRoad(MeshBuilder meshBuilder, Vector3 pPrev, Vector3 pCurr, Vector3 pNext)
+    private void edges(MeshBuilder meshBuilder, Vector3 pPrev, Vector3 pCurr, Vector3 pNext)
     {
-        //Road Line
-        Vector3 offset = Vector3.zero;
-        Vector3 targetOffset = Vector3.forward * lineWidth;
 
-        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, 0);
+        roadEd(meshBuilder,  pPrev,  pCurr,  pNext);
 
-        //Road
-        offset += targetOffset;
-        targetOffset = Vector3.forward * roadWidth;
 
-        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, 1);
 
- 
 
+        int stripeSubmesh = Random.RandomRange(3,5);
+
+      
         //Edge
         offset += targetOffset;
         targetOffset = Vector3.up * edgeHeight;
 
-        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, 3);
+        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, stripeSubmesh);
 
         //Edge Top
         offset += targetOffset;
         targetOffset = Vector3.forward * edgeWidth;
 
-        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, 3);
+        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, stripeSubmesh);
 
         //Edge
         offset += targetOffset;
         targetOffset = -Vector3.up * edgeHeight;
 
-        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset,4);
+        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, stripeSubmesh);
 
     }
 
@@ -166,11 +183,21 @@ public class Road : MonoBehaviour
             Vector3 pCurr = points[i % points.Count];
             Vector3 pNext = points[(i + 1) % points.Count];
 
-            ExtrudeRoad(meshBuilder, pPrev, pCurr, pNext);
+            edges(meshBuilder, pPrev, pCurr, pNext);
         }
 
-        //car.transform.position = points[0];
-        //car.transform.LookAt(points[1]);
+
+        int randomNum = Random.RandomRange(0,points.Count-1);
+        car.transform.position = points[randomNum];
+        car.transform.LookAt(points[1]);
+
+
+        float carx = points[randomNum].x + 5;
+
+        float carz = points[randomNum].z+ 2;
+
+        cube = Instantiate(Resources.Load<GameObject>("Cube"), new Vector3(carx,6f,carz), Quaternion.identity);
+        cube.name = "Starter";
 
         meshFilter.mesh = meshBuilder.CreateMesh();
 
@@ -199,5 +226,67 @@ public class Road : MonoBehaviour
 
             points[i] += centreDirection * noise * control;
         }
+    }
+
+
+    private void roadEd(MeshBuilder meshBuilder, Vector3 pPrev, Vector3 pCurr, Vector3 pNext) {
+
+        //Road Line
+        offset = Vector3.zero;
+        targetOffset = Vector3.forward * lineWidth;
+
+    
+        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, 0);
+
+        //Road
+        offset += targetOffset;
+        targetOffset = Vector3.forward * roadWidth;
+
+        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, 1);
+
+
+
+
+    }
+
+
+    private void MaterialList()
+    {
+
+        List<Material> materialsList = new List<Material>();
+
+
+        for (int i = 0; i <= 6; i++)
+        {
+            Material randMaterial = new Material(Shader.Find("Specular"));
+            randMaterial.color = UnityEngine.Random.ColorHSV();
+            materialsList.Add(randMaterial);
+
+        }
+
+        MeshRenderer meshRenderer = this.GetComponent<MeshRenderer>();
+        meshRenderer.materials = materialsList.ToArray();
+
+    }
+
+
+    IEnumerator endP()
+    {
+        yield return new WaitForSeconds(15f);
+
+        float Xc = carPos.x;
+        float Yc = carPos.y-6f;
+        float Zc = carPos.z;
+
+
+
+        Wall = Instantiate(Resources.Load<GameObject>("RaceEnd"), new  Vector3 (Xc,Yc,Zc), Quaternion.identity);
+
+     
+
+        yield return null;
+
+
+
     }
 }
