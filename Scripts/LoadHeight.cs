@@ -15,6 +15,7 @@ class TerrainTextureData
 public class LoadHeight : MonoBehaviour {
 
 private Terrain terrain;
+
 private TerrainData tData;
 
 [SerializeField]

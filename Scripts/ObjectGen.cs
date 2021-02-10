@@ -48,15 +48,32 @@ public class ObjectGen : MonoBehaviour
     private int LayerIndex = 8;
 
 
+    [SerializeField]
+    private GameObject water;
+
+
+
+    [SerializeField]
+    private GameObject storm;
+
+    [SerializeField]
+    private GameObject rain;
+
+
+
+
     void Start()
     {
         tData = Terrain.activeTerrain.terrainData;
-
         MakeTree();
+        AddWater();
+        AddStorm(); //855-1500x -330 700z 947y
+        Rain();
 
-        MakeRock();
+
 
     }
+
     void MakeTree()
     {
 
@@ -132,72 +149,130 @@ public class ObjectGen : MonoBehaviour
         tData.treeInstances = treeInst.ToArray();
     }
 
+    void AddWater()
+    {
+        GameObject waterGameObject = GameObject.Find("water");
 
-    void MakeRock()
+        if (!waterGameObject)
+        {
+            waterGameObject = Instantiate(water, new Vector3(622, 474, 702), this.transform.rotation);
+            waterGameObject.name = "water";
+        }
+
+
+
+        waterGameObject.transform.localScale = new Vector3(800, 366, 800);
+
+
+
+    }
+
+
+    void AddStorm()
     {
 
-        DetailPrototype[] Prorocks = new DetailPrototype[rockD.Count];
+        GameObject StormGameObject = GameObject.Find("storm");
 
-        for (int i = 0; i < rockD.Count; i++)
+
+        //855-1500x -330 700z 947y
+
+        if (!StormGameObject)
         {
-            Prorocks[i] = new DetailPrototype();
-            Prorocks[i].prototype = rockD[i].treeMesh;
+            int ranx = Random.Range(855, -1500);
+            StormGameObject = Instantiate(storm, new Vector3(ranx, 700, 283), this.transform.rotation);
+            StormGameObject.name = "storm";
+
         }
 
-        tData.detailPrototypes = Prorocks;
+       
+    
 
-        List<DetailPrototype> rockInst = new List<DetailPrototype>();
-
-
-        for (int z = 0; z < tData.size.z; z += treeSpace)
-        {
-            for (int x = 0; x < tData.size.x; x += treeSpace)
-            {
-                for (int treePrototypeIndex = 0; treePrototypeIndex < Prorocks.Length; treePrototypeIndex++)
-                {
-                    if (rockInst.Count < treeCap)
-                    {
-                        float cHeight = tData.GetHeight(x, z) / tData.size.y;
-
-                        if (cHeight >= rockD[treePrototypeIndex].minHeight && cHeight <= rockD[treePrototypeIndex].maxHeight)
-                        {
-                            float RandomX = (x + Random.Range(-randX, randX)) / tData.size.x;
-                            float RandomZ = (z + Random.Range(-randZ, randZ)) / tData.size.z;
-                            
-                            DetailPrototype tInstance = new DetailPrototype();
-
-                            tInstance.prototype.transform.position = new Vector3(RandomX, cHeight, RandomZ);
-
-                            Vector3 treePosition = new Vector3(RandomX * tData.size.x, cHeight * tData.size.y, RandomZ * tData.size.z) + this.transform.position;
+        StormGameObject.transform.localScale = new Vector3(5, 1, 5);
 
 
-                            RaycastHit raycastHit;
-
-                            int layerMask = 1 << LayerIndex;
-
-                            if (Physics.Raycast(treePosition, Vector3.down, out raycastHit, 100, layerMask) || Physics.Raycast(treePosition, Vector3.up, out raycastHit, 100, layerMask))
-                            {
-
-                                float treeHeight = (raycastHit.point.y - this.transform.position.y) / tData.size.y;
-
-
-                                tInstance.prototype.transform.position = new Vector3(tInstance.prototype.transform.position.x, treeHeight, tInstance.prototype.transform.position.z);
-                               
-
-                                rockInst.Add(tInstance);
-
-
-                            }
-
-
-                        }
-
-                    }
-                }
-            }
-        }
-
-
-        tData.detailPrototypes = rockInst.ToArray();
     }
+
+
+    void Rain()
+    {
+
+
+     Instantiate(rain, this.transform.position, this.transform.rotation);
+        
+    }
+
+
+
+    /*
+
+      void MakeRock()
+      {
+
+          DetailPrototype[] Prorocks = new DetailPrototype[rockD.Count];
+
+          for (int i = 0; i < rockD.Count; i++)
+          {
+              Prorocks[i] = new DetailPrototype();
+              Prorocks[i].prototype = rockD[i].treeMesh;
+          }
+
+          tData.detailPrototypes = Prorocks;
+
+          List<DetailPrototype> rockInst = new List<DetailPrototype>();
+
+
+          for (int z = 0; z < tData.size.z; z += treeSpace)
+          {
+              for (int x = 0; x < tData.size.x; x += treeSpace)
+              {
+                  for (int treePrototypeIndex = 0; treePrototypeIndex < Prorocks.Length; treePrototypeIndex++)
+                  {
+                      if (rockInst.Count < treeCap)
+                      {
+                          float cHeight = tData.GetHeight(x, z) / tData.size.y;
+
+                          if (cHeight >= rockD[treePrototypeIndex].minHeight && cHeight <= rockD[treePrototypeIndex].maxHeight)
+                          {
+                              float RandomX = (x + Random.Range(-randX, randX)) / tData.size.x;
+                              float RandomZ = (z + Random.Range(-randZ, randZ)) / tData.size.z;
+
+                              DetailPrototype tInstance = new DetailPrototype();
+
+                              tInstance.prototype.transform.position = new Vector3(RandomX, cHeight, RandomZ);
+
+                              Vector3 treePosition = new Vector3(RandomX * tData.size.x, cHeight * tData.size.y, RandomZ * tData.size.z) + this.transform.position;
+
+
+                              RaycastHit raycastHit;
+
+                              int layerMask = 1 << LayerIndex;
+
+                              if (Physics.Raycast(treePosition, Vector3.down, out raycastHit, 100, layerMask) || Physics.Raycast(treePosition, Vector3.up, out raycastHit, 100, layerMask))
+                              {
+
+                                  float treeHeight = (raycastHit.point.y - this.transform.position.y) / tData.size.y;
+
+
+                                  tInstance.prototype.transform.position = new Vector3(tInstance.prototype.transform.position.x, treeHeight, tInstance.prototype.transform.position.z);
+                                  rockInst.Add(tInstance);
+
+
+                              }
+
+
+                          }
+
+                      }
+                  }
+              }
+          }
+
+
+          tData.detailPrototypes = rockInst.ToArray();
+      }
+
+      */
+
+
+
 }
