@@ -91,9 +91,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heightMapImage: {fileID: 0}
   heightMapImages:
-  - {fileID: 2800000, guid: 3c6242fc100ad444790b44abeb168bf9, type: 3}
   - {fileID: 2800000, guid: ac0467083719a44cdbcea0cfa7335791, type: 3}
-  - {fileID: 2800000, guid: a66399866411d40e1aab44697a26c15e, type: 3}
+  - {fileID: 2800000, guid: ac0467083719a44cdbcea0cfa7335791, type: 3}
   terrainTextureDataList:
   - terrainTexture: {fileID: 2800000, guid: c6e0767b1f8c34890ac245217f4b9731, type: 3}
     minHeight: 0
