@@ -22,30 +22,30 @@ public class MeshBuilder
 
         for (int i = 0; i < submeshCount; i++)
         {
-            submeshIn[i] = new List<int>();
+            submeshIn[i] = new List<int>(); // intial the array of lists 
         }
 
     }
 
    
 
-    public void BuildTriangle(Vector3 p0, Vector3 p1, Vector3 p2, int subMesh)
+    public void BuildTriangle(Vector3 p0, Vector3 p1, Vector3 p2, int subMesh) // build triangle without normal 
     {
-        Vector3 normal = Vector3.Cross(p1 - p0, p2 - p0).normalized;
-        BuildTriangle(p0, p1, p2, normal, subMesh);
+        Vector3 normal = Vector3.Cross(p1 - p0, p2 - p0).normalized; // creating outwards normal
+        BuildTriangle(p0, p1, p2, normal, subMesh); 
     }
 
 
     public void BuildTriangle(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 normal, int subMesh)
     {
       
-        for (int j=0; j<3; j++)
+        for (int j=0; j<3; j++) // Adding the vertices index 
         {
             indi.Add(verti.Count+j);
 
         }
 
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < 3; j++) // adding the submesh indices for materials 
         {
             submeshIn[subMesh].Add(verti.Count+j);
 
@@ -73,7 +73,7 @@ public class MeshBuilder
 
     public Mesh CreateMesh()
     {
-        Mesh mesh = new Mesh();
+        Mesh mesh = new Mesh(); // the data from the build triangle is being passed to the mesh 
 
         mesh.vertices = verti.ToArray();
 
@@ -85,15 +85,15 @@ public class MeshBuilder
 
         mesh.subMeshCount = submeshIn.Length;
 
-        for (int i = 0; i < submeshIn.Length; i++)
+        for (int i = 0; i < submeshIn.Length; i++) // going throught the submeshes created 
         {
             if (submeshIn[i].Count < 3)
             {
-                mesh.SetTriangles(new int[3] { 0, 0, 0 }, i);
+                mesh.SetTriangles(new int[3] { 0, 0, 0 }, i);  // if there is no triangle 
             }
             else
             {
-                mesh.SetTriangles(submeshIn[i].ToArray(), i);
+                mesh.SetTriangles(submeshIn[i].ToArray(), i); // if there is a triangle set triangles is used to set the material
             }
         }
 

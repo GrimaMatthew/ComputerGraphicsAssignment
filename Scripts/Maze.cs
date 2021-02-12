@@ -16,6 +16,11 @@ public class Maze : MonoBehaviour
 
     public GameObject Player;
     // Start is called before the first frame update
+
+
+    /// <summary>
+    /// Tried to create the maze randomly script wasn't used. 
+    /// </summary>
     void Start()
     {
 

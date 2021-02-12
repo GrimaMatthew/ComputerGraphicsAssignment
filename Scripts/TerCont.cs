@@ -10,7 +10,7 @@ public class TerCont : MonoBehaviour
     void Start()
     {
 
-        for (int i = 0; i <= 1000; i +=1000)
+        for (int i = 0; i <= 1000; i +=1000) // creating an additional two terrains from prefab
         {
            
                ter = Instantiate(Resources.Load<GameObject>("Terrain"), new Vector3(i, 0f, 0), Quaternion.identity);
@@ -20,9 +20,4 @@ public class TerCont : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

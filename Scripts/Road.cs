@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter))]
-[RequireComponent(typeof(MeshRenderer))]
-[RequireComponent(typeof(MeshCollider))]
+[RequireComponent(typeof(MeshFilter))] // Getting mesh filter
+[RequireComponent(typeof(MeshRenderer))] // Getting mesh renderer 
+[RequireComponent(typeof(MeshCollider))]// Getting mesh collider
 
 public class Road : MonoBehaviour
 {
@@ -12,19 +12,19 @@ public class Road : MonoBehaviour
     private float radius = 30f; // this defines the radius of the path
 
     [SerializeField]
-    private float segments = 300f;
+    private float segments = 300f; // the number of extrusions we perform in this circle 
 
     [SerializeField]
     private static float lineWidth = 0.3f; // middle white line road marker
 
     [SerializeField]
-    private float roadWidth = 8f; // width of the road on each side of the line
+    private float roadWidth = 8f; // width of the road how wide tarmac is 
 
     [SerializeField]
     private float edgeWidth = 1f; // widht of our road barrier at the edge of our road
 
     [SerializeField]
-    private float edgeHeight = 1f;
+    private float edgeHeight = 1f; // height of barrier 
 
     [SerializeField]
     private static int submeshSize = 6;
@@ -42,15 +42,15 @@ public class Road : MonoBehaviour
     private Vector2 waveStep = new Vector2(0.01f, 0.01f);
 
     [SerializeField]
-    private bool stripeCheck = true;
+    private bool stripeCheck = true; // stripe the barrier 
 
 
-    MeshBuilder meshBuilder = new MeshBuilder(submeshSize);
+    MeshBuilder meshBuilder = new MeshBuilder(submeshSize); // ref to mesh build
     MeshFilter meshFilter;
     MeshCollider meshCollider;
 
 
-    List<Vector3> points = new List<Vector3>();
+    List<Vector3> points = new List<Vector3>(); // points for our circle 
 
 
     Vector3 offset = Vector3.zero;
@@ -62,25 +62,21 @@ public class Road : MonoBehaviour
     GameObject Wall;
 
     [SerializeField]
-    private GameObject car;
+    private GameObject car; // ref to car 
 
     void Start()
     {
-        meshFilter = this.GetComponent<MeshFilter>();
+        meshFilter = this.GetComponent<MeshFilter>(); // ref to mesh filter
 
-        meshCollider = this.GetComponent<MeshCollider>();
+        meshCollider = this.GetComponent<MeshCollider>();// ref to mesh collider
 
         PointMaker();
 
         MaterialList();
 
-        carPos = car.transform.position;
+        carPos = car.transform.position; // setting possition
 
         StartCoroutine(endP());
-
-
-
-
 
     }
 
@@ -94,65 +90,72 @@ public class Road : MonoBehaviour
     private void edges(MeshBuilder meshBuilder, Vector3 pPrev, Vector3 pCurr, Vector3 pNext)
     {
 
-        roadEd(meshBuilder,  pPrev,  pCurr,  pNext);
-
-
-
-
-        int stripeSubmesh = Random.RandomRange(3,5);
-
       
-        //Edge
+
+
+
+        int stripeSubmesh = Random.RandomRange(3,5); // the stripe mesch changes the colours at the barrier.
+
+
+
+        
+        //Edge innder
         offset += targetOffset;
         targetOffset = Vector3.up * edgeHeight;
 
-        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, stripeSubmesh);
+        RoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, stripeSubmesh);
 
-        //Edge Top
+        //Edge top
         offset += targetOffset;
         targetOffset = Vector3.forward * edgeWidth;
 
-        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, stripeSubmesh);
+        RoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, stripeSubmesh);
 
-        //Edge
+        //Edge outer 
         offset += targetOffset;
         targetOffset = -Vector3.up * edgeHeight;
 
-        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, stripeSubmesh);
+        RoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, stripeSubmesh);
 
     }
 
     //4. Create each quad
-    private void MakeRoadQuad(MeshBuilder meshBuilder, Vector3 pPrev, Vector3 p0, Vector3 p1,
+    private void RoadQuad(MeshBuilder meshBuilder, Vector3 pPrev, Vector3 current, Vector3 next,
                               Vector3 offset, Vector3 targetOffset, int submesh)
     {
-        Vector3 forward = (p1 - p0).normalized;
-        Vector3 forwardPrev = (p0 - pPrev).normalized;
-
-        Quaternion lo = Quaternion.LookRotation(Vector3.Cross(forward, Vector3.up));
-        Quaternion islo = Quaternion.LookRotation(Vector3.Cross(forwardPrev, Vector3.up));
-
-        Vector3 tl = p0 + (islo * offset);
-        Vector3 tr = p0 + (islo * (offset + targetOffset));
-        Vector3 bl = p1 + (lo * offset);
-        Vector3 br = p1 + (lo * (offset + targetOffset));
+        Vector3 forward = (next - current).normalized; // the direction the road 
+        Vector3 forwardPrev = (current - pPrev).normalized; // setting up the previous to know where the road was previously so road isnt segmented 
 
 
-        meshBuilder.BuildTriangle(tl, tr, bl, submesh);
+        //This is for the outer road 
+        Quaternion lo = Quaternion.LookRotation(Vector3.Cross(forward, Vector3.up)); // creating a rotation to the right or left of foward .cross allows us to get the thir direction between vectors will retunr the foward
+        Quaternion islo = Quaternion.LookRotation(Vector3.Cross(forwardPrev, Vector3.up)); // previous point
+
+        // target offset is the width while offset is the position from which the road extrud
+        Vector3 tl = current + (islo * offset); 
+        Vector3 tr = current + (islo * (offset + targetOffset));
+        Vector3 bl = next + (lo * offset);
+        Vector3 br = next + (lo * (offset + targetOffset));
+
+
+        meshBuilder.BuildTriangle(tl, tr, bl, submesh); // building the track
         meshBuilder.BuildTriangle(tr, br, bl, submesh);
 
 
-        lo = Quaternion.LookRotation(Vector3.Cross(-forward, Vector3.up));
+        //This is for the inner road 
+
+
+        lo = Quaternion.LookRotation(Vector3.Cross(-forward, Vector3.up)); // inverting the foward direction to give us to opposite direction 
         islo = Quaternion.LookRotation(Vector3.Cross(-forwardPrev, Vector3.up));
 
-        tl = p0 + (islo * offset);
-        tr = p0 + (islo * (offset + targetOffset));
-        bl = p1 + (lo * offset);
-        br = p1 + (lo * (offset + targetOffset));
+        tl = current + (islo * offset);
+        tr = current + (islo * (offset + targetOffset));
+        bl = next + (lo * offset);
+        br = next + (lo * (offset + targetOffset));
 
 
 
-        meshBuilder.BuildTriangle(bl, br, tl, submesh);
+        meshBuilder.BuildTriangle(bl, br, tl, submesh); // We have too re arrange so that the normals face the right way 
         meshBuilder.BuildTriangle(br, tr, tl, submesh);
 
 
@@ -163,31 +166,34 @@ public class Road : MonoBehaviour
     {
 
 
-        //1. Divide the circular race track into segments denoted in degrees and each point is defined by each segment
-        //   Create the points and store them in a list
-        float segmentDegrees = 360f / segments;
+     
+        float segmentDegrees = 360f / segments;  // dividing the segments we want by 360 full rotation to get the segment degree
 
 
-        for (float degrees = 0; degrees < 360f; degrees += segmentDegrees)
+        for (float degrees = 0; degrees < 360f; degrees += segmentDegrees) //360 f is a full rotation all around the circle at different increments of degrees 
         {
-            Vector3 point = Quaternion.AngleAxis(degrees, Vector3.up) * Vector3.forward * radius;
-            points.Add(point);
+            Vector3 point = Quaternion.AngleAxis(degrees, Vector3.up) * Vector3.forward * radius; //This is going to create a point with the radius i created
+            points.Add(point); //addind the points to our list
         }
 
         curve();
 
-        //2. function to define the path - the path is defined by each segment
-        for (int i = 1; i < points.Count + 1; i++)
+        
+        for (int i = 1; i < points.Count + 1; i++) // going through points list // getting 3 different points from the points array 
         {
-            Vector3 pPrev = points[i - 1];
-            Vector3 pCurr = points[i % points.Count];
-            Vector3 pNext = points[(i + 1) % points.Count];
+            Vector3 pPrev = points[i - 1]; // the previous point 
+            Vector3 pCurr = points[i % points.Count]; // the current point % to stay in the array avoid out of range error 
+            Vector3 pNext = points[(i + 1) % points.Count]; // the next point
+
+            roadEd(meshBuilder, pPrev, pCurr, pNext); // building the road
 
             edges(meshBuilder, pPrev, pCurr, pNext);
         }
 
 
-        int randomNum = Random.RandomRange(0,points.Count-1);
+
+
+        int randomNum = Random.RandomRange(0,points.Count-1); // setting the random location of the car
         car.transform.position = points[randomNum];
         car.transform.LookAt(points[1]);
 
@@ -196,33 +202,33 @@ public class Road : MonoBehaviour
 
         float carz = points[randomNum].z+ 2;
 
-        cube = Instantiate(Resources.Load<GameObject>("Cube"), new Vector3(carx,6f,carz), Quaternion.identity);
+        cube = Instantiate(Resources.Load<GameObject>("Cube"), new Vector3(carx,6f,carz), Quaternion.identity); // setting the start marker
         cube.name = "Starter";
 
         meshFilter.mesh = meshBuilder.CreateMesh();
 
-        meshCollider.sharedMesh = meshFilter.mesh;
+        meshCollider.sharedMesh = meshFilter.mesh; // populating mesh collider 
 
     }
 
 
-    private void curve()
+    private void curve()// wave method
     {
 
+        // applying perlin noise to each point in the circle 
+        Vector2 wave = this.waveOffset; 
 
-        Vector2 wave = this.waveOffset; // wave method
-
-        for (int i = 0; i < points.Count; i++)
+        for (int i = 0; i < points.Count; i++) // going through points 
         {
-            wave += waveStep;
+            wave += waveStep; // waves changing by step 
 
-            Vector3 point = points[i];
-            Vector3 centreDirection = point.normalized;
+            Vector3 point = points[i]; // ref to point
+            Vector3 centreDirection = point.normalized; // direction from the centre 
 
-            float noise = Mathf.PerlinNoise(wave.x * waveScale, wave.y * waveScale);
+            float noise = Mathf.PerlinNoise(wave.x * waveScale, wave.y * waveScale); // adding the perlin noise
             noise *= wavyness;
 
-            float control = Mathf.PingPong(i, points.Count / 2f) / (points.Count / 2f);
+            float control = Mathf.PingPong(i, points.Count / 2f) / (points.Count / 2f); // to fix the edges at the start and along the track  ping pong between 0 and 1 
 
             points[i] += centreDirection * noise * control;
         }
@@ -233,16 +239,16 @@ public class Road : MonoBehaviour
 
         //Road Line
         offset = Vector3.zero;
-        targetOffset = Vector3.forward * lineWidth;
+        targetOffset = Vector3.forward * lineWidth; //  linewidth is in the center of the track 
 
     
-        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, 0);
+        RoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, 0); // setting up the road buildin method 
 
-        //Road
-        offset += targetOffset;
+        //Road - making the road 
+        offset += targetOffset; // the  target offset is offset  to start from where i stopped 
         targetOffset = Vector3.forward * roadWidth;
 
-        MakeRoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, 1);
+        RoadQuad(meshBuilder, pPrev, pCurr, pNext, offset, targetOffset, 1);
 
 
 
@@ -250,10 +256,10 @@ public class Road : MonoBehaviour
     }
 
 
-    private void MaterialList()
+    private void MaterialList()// adding the materials randomly 
     {
 
-        List<Material> materialsList = new List<Material>();
+        List<Material> materialsList = new List<Material>(); 
 
 
         for (int i = 0; i <= 6; i++)
@@ -271,8 +277,8 @@ public class Road : MonoBehaviour
 
 
     IEnumerator endP()
-    {
-        yield return new WaitForSeconds(15f);
+    { 
+        yield return new WaitForSeconds(15f); // loading the end marker to go to the next race track. 
 
         float Xc = carPos.x;
         float Yc = carPos.y-6f;

@@ -30,7 +30,7 @@ public class Wall : MonoBehaviour
 
 
 
-    IEnumerator AddMat()
+    IEnumerator AddMat() // adding random materia; 
     {
 
         materialsList = new List<Material>();
@@ -54,16 +54,14 @@ public class Wall : MonoBehaviour
 
 
 
-    private void WallMaker()
+    private void WallMaker() // creating corner wall
     {
 
-        //TopVertices
+        //creating vertices for wall
      
         t1 = new Vector3(-size.x, size.y, -size.z); 
         t2 = new Vector3(-size.x, size.y, size.z);
       
-
-        //Bottom Vertices
  
         b1 = new Vector3(-size.x, -size.y, -size.z); //bottom Right
         b2 = new Vector3(-size.x, -size.y, size.z);// Bottom right of the bottom square 
@@ -82,10 +80,11 @@ public class Wall : MonoBehaviour
 
 
 
-        //Wall
+        //right side Wall
         meshBuilder.BuildTriangle(b1, t2, t1, 0);
         meshBuilder.BuildTriangle(b1, b2, t2, 0);
 
+        //left side wall
         meshBuilder.BuildTriangle(b1, t1, t2, 1);
         meshBuilder.BuildTriangle(b1, t2, b2, 1);
 

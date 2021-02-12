@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class MazeMaker : MonoBehaviour
 {
-
+    // Gameobject REfs
     GameObject plane;
     GameObject StartPoint;
     GameObject EndPoint;
     GameObject Walls;
     GameObject Obsti;
     // Start is called before the first frame update
+
+
+    /// <summary>
+    /// In this script the different game objects were spawned at different 
+    /// </summary>
     void Start()
     {
         float x = Random.Range(7, 30);

@@ -30,7 +30,7 @@ public class PlaneCreator : MonoBehaviour
 
         MeshFilter meshFilter = this.GetComponent<MeshFilter>();
 
-        Pointrender();
+        Pointrender(); // first we create the points for ouur quad creator to use 
         Quadcreate();
         meshFilter.mesh = meshBuilder.CreateMesh();
         MaterialList();
@@ -39,7 +39,7 @@ public class PlaneCreator : MonoBehaviour
     }
 
 
-    private void MaterialList()
+    private void MaterialList() // adding the material randomly 
     {
 
         List<Material> materialsList = new List<Material>();
@@ -65,7 +65,7 @@ public class PlaneCreator : MonoBehaviour
 
        
         //Create the quads 
-        for (int x = 0; x < width - 1; x++)
+        for (int x = 0; x < width - 1; x++) // going throught the width and the height we set up 
         {
             for (int y = 0; y < height - 1; y++)
             {
@@ -99,7 +99,7 @@ public class PlaneCreator : MonoBehaviour
             {
                 points[x, y] = new Vector3(
                     cellSize * x,
-                    0, // Math.ping(x,10) | 0 for flat surface
+                    0, // Math.ping(x,10) for slops  || 0 for flat surface
                     cellSize * y);
             }
         }

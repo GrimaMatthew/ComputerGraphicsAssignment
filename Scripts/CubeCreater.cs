@@ -18,13 +18,17 @@ public class CubeCreater : MonoBehaviour
     private List<Material> materialsList;
 
     [SerializeField]
-    private int meshSize = 6;
+    private int meshSize = 6; // mesh size for the 6 differnet faces 
 
+    //each of the points will make a square
 
-    Vector3 t0;
+    //top square
+    Vector3 t0; 
     Vector3 t1;
     Vector3 t2;
     Vector3 t3;
+
+    //bottom square
 
     Vector3 b0;
     Vector3 b1;
@@ -41,7 +45,7 @@ public class CubeCreater : MonoBehaviour
   
 
 
-    IEnumerator AddMat()
+    IEnumerator AddMat() // adding material randomly 
     {
        
         materialsList = new List<Material>();
@@ -65,7 +69,7 @@ public class CubeCreater : MonoBehaviour
   
 
 
-    private void cubeMaker ()
+    private void cubeMaker () 
     {
        
         //TopVertices
@@ -93,7 +97,7 @@ public class CubeCreater : MonoBehaviour
         // intiialise MeshBuilder
         MeshBuilder meshBuilder = new MeshBuilder(meshSize);
 
-        //Top Square
+        //Top Square always moving clockwise 
         //2Triangles
         meshBuilder.BuildTriangle(t0, t1, t2, 0); // The zero is the index of the sub mesh 
         meshBuilder.BuildTriangle(t0, t2, t3, 0);

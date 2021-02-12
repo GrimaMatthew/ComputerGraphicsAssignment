@@ -11,9 +11,6 @@ public class Wall2 : MonoBehaviour
     
     private int meshSize = 2;
 
-
-
-
    
     Vector3 t2;
     Vector3 t3;
@@ -33,7 +30,7 @@ public class Wall2 : MonoBehaviour
 
 
 
-    IEnumerator AddMat()
+    IEnumerator AddMat() // adding the material 
     {
 
         materialsList = new List<Material>();
@@ -57,16 +54,12 @@ public class Wall2 : MonoBehaviour
 
 
 
-    private void WallMaker()
+    private void WallMaker() // creates a straight wall 
     {
-
-
+        //creatingg the vertices for the wall2 to use 
+        
         t2 = new Vector3(-size.x, size.y, size.z);// Bottom right of the top square 
         t3 = new Vector3(size.x, size.y, size.z);//bottom left of the top square
-
-
-        //Bottom Vertices(just a change in Y)
-
       
         b2 = new Vector3(-size.x, -size.y, size.z);// Bottom right of the bottom square 
         b3 = new Vector3(size.x, -size.y, size.z);//bottom left of the bottom square
@@ -90,7 +83,7 @@ public class Wall2 : MonoBehaviour
         meshBuilder.BuildTriangle(b2, b3, t3, 0);
 
 
-        //Right-side Square
+        //Left-side Square
         meshBuilder.BuildTriangle(b2, t3, t2, 1);
         meshBuilder.BuildTriangle(b2, t3, b3, 1);
 

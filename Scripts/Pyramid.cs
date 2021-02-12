@@ -13,7 +13,7 @@ public class Pyramid : MonoBehaviour
     private float pyramidSize = 5f; // the height of the pyramid top to bottom 
 
     private static int subMeshSize = 4;
-    Vector3 top;
+    Vector3 top; 
     Vector3 base0;
     Vector3 base2;
     Vector3 base1;
@@ -31,12 +31,12 @@ public class Pyramid : MonoBehaviour
         meshFilter.mesh = meshBuiler.CreateMesh();
 
 
-        StartCoroutine(RotatePyri(180, Vector3.up));
+        StartCoroutine(RotatePyri(180, Vector3.up)); // rotatin the pyriamd to show colours 
 
 
     }
 
-    private void MaterialList()
+    private void MaterialList() // adding Materials 
     {
 
         List<Material> materialsList = new List<Material>();
@@ -59,21 +59,19 @@ public class Pyramid : MonoBehaviour
     {
         //Add point
 
-        top = new Vector3(0, pyramidSize);//Top Point 0 is origin
+        top = new Vector3(0, pyramidSize);//Top Point 0 is origin adding y only the size at the very top
 
-        base0 = Quaternion.AngleAxis(0f, Vector3.up) * Vector3.forward * pyramidSize;
+        base0 = Quaternion.AngleAxis(0f, Vector3.up) * Vector3.forward * pyramidSize;// describes a rotation around a direction in this case rotating around the up 
 
-        base1 = Quaternion.AngleAxis(240f, Vector3.up) * Vector3.forward * pyramidSize;
+        base1 = Quaternion.AngleAxis(240f, Vector3.up) * Vector3.forward * pyramidSize; // 120 degree backwards
 
-        base2 = Quaternion.AngleAxis(120f, Vector3.up) * Vector3.forward * pyramidSize;
+        base2 = Quaternion.AngleAxis(120f, Vector3.up) * Vector3.forward * pyramidSize; // 120 degree backwards
 
     }
 
     private void MakeP()
     {
         
-
-
         //Build Triangle
         meshBuiler.BuildTriangle(base0, base1, base2, 0);
         meshBuiler.BuildTriangle(base1, base0, top, 1);

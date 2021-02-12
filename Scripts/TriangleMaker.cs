@@ -9,9 +9,9 @@ using UnityEngine;
 public class TriangleMaker : MonoBehaviour
 {
     [SerializeField]
-    private Vector3 size = Vector3.one;
+    private Vector3 size = Vector3.one; 
 
-    private List<Material> materialList;
+    private List<Material> materialList; // material list
 
 
 
@@ -25,7 +25,7 @@ public class TriangleMaker : MonoBehaviour
 
     }
 
-    private void AddMaterials()
+    private void AddMaterials() // adding the materials 
     {
         Material greenMat = new Material(Shader.Find("Specular"));
         greenMat.color = Color.green;
@@ -44,17 +44,17 @@ public class TriangleMaker : MonoBehaviour
         MeshFilter meshFilter = this.GetComponent<MeshFilter>();
 
         //initialise mesh builder
-        MeshBuilder meshBuilder = new MeshBuilder(2);// 1 when we only have 1 strinagle submesh count
+        MeshBuilder meshBuilder = new MeshBuilder(2);// 1 when we 2 submesh count submesh count
 
 
         //build our triangle
-        Vector3 p0 = new Vector3(size.x, size.y, -size.z);
+        Vector3 p0 = new Vector3(size.x, size.y, -size.z); // we are moving in clockwise direction going the points
         Vector3 p1 = new Vector3(-size.x, size.y, -size.z);
         Vector3 p2 = new Vector3(-size.x, size.y, size.z);
 
 
         meshBuilder.BuildTriangle(p0, p1, p2, 0);
-        meshBuilder.BuildTriangle(p0, p2, p1, 1);  // adding the bottom triangle so it can be viewed from the bottom also  
+        meshBuilder.BuildTriangle(p0, p2, p1, 1);  // adding the bottom/opposite part of the triangle so it can be viewed from the bottom also  
 
 
 
@@ -64,8 +64,8 @@ public class TriangleMaker : MonoBehaviour
         //initialise our mesh render and assign the material list to the mesh rendere's material list
         MeshRenderer meshRender = this.GetComponent<MeshRenderer>();
 
-        AddMaterials();
-        meshRender.materials = materialList.ToArray();
+        AddMaterials(); // running add metrials 
+        meshRender.materials = materialList.ToArray();// setting the add material 
 
     }
 }
